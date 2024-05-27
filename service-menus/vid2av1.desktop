@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Service
+ServiceTypes=KonqPopupMenu/Plugin
+MimeType=video/*;image/gif;
+Actions=convertToAV1
+
+[Desktop Action convertToAV1]
+Name=Convert to AV1 WebM
+Name[de]=In AV1 WebM umwandeln
+Icon=image-gif
+Exec=vid2av1 %u

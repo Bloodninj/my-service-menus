@@ -1,0 +1,81 @@
+#!/bin/sh
+OUTFILE=""
+if [ $# -eq 0 ] ; then
+    echo """USAGE:
+    vid2av1 VIDEO [OUTPUT]
+    If [OUTPUT] is omitted, the resulting file will use the same filename as the input file."""
+    exit 1
+fi
+
+if [ -z "$1" ] ; then
+    echo "No argument supplied"
+    exit 1
+fi
+
+if ! [ -z "$2" ] ; then
+    OUTFILE="$2"
+fi
+
+IMGFILE="$1"
+OUTFILE=""
+
+if [ -z "$2" ] ; then
+    FULLNAME=`basename -- "$1"`
+    BASENAME="${FULLNAME%.*}"
+    OUTFILE="$BASENAME.webm"
+else
+    OUTFILE="$2"
+fi
+
+TMPFILE=$(mktemp)
+
+ffmpeg_log_file="ffmpeg_error.log"
+
+if [ -e $ffmpeg_log_file ]; then
+    rm $ffmpeg_log_file
+fi
+touch $ffmpeg_log_file
+
+input_file=$IMGFILE
+output_file=$OUTFILE
+temp_file=$(mktemp)
+
+
+# Get the total duration of the input video
+total_duration=$(ffprobe -v error -select_streams v:0 -show_entries stream=duration -of default=noprint_wrappers=1:nokey=1 "$input_file")
+
+# Start ffmpeg conversion with progress information
+ffmpeg -i "$input_file" -c:v libx264 -c:a aac -strict experimental -y -f mp4 -progress pipe:1 "$output_file" 2>&1 | \
+    awk -F= '/progress/{print int($2)}' | \
+    while read -r progress; do
+        echo "Progress: $progress%"
+    done &
+
+# Get the process ID of the last background command
+ffmpeg_pid=$!
+
+# Check if ffmpeg completed successfully or not
+wait "$ffmpeg_pid"
+ffmpeg_exit_code=$?
+
+if [ "$ffmpeg_exit_code" -ne 0 ]; then
+    echo "Error: ffmpeg encountered an issue."
+else
+    echo "Conversion completed successfully."
+fi
+
+# Remove the ffmpeg error log file
+rm -f "$ffmpeg_log_file"
+
+# Remove the ffmpeg error log file
+# rm -f "$ffmpeg_log_file"
+
+# Close the progress bar when conversion is complete
+# qdbus $QDBUS_REF close
+
+
+# cp "$TMPFILE" "$OUTFILE"
+rm "$temp_file"
+rm "$TMPFILE"
+
+

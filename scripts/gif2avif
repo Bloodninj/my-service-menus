@@ -1,0 +1,36 @@
+#!/bin/sh
+OUTFILE=""
+if [ $# -eq 0 ] ; then
+    echo """USAGE:
+    conv2avif IMAGE [OUTPUT]
+    If [OUTPUT] is omitted, the resulting file will use the same filename as the input file."""
+    exit 1
+fi
+
+if [ -z "$1" ] ; then
+    echo "No argument supplied"
+    exit 1
+fi
+
+if ! [ -z "$2" ] ; then
+    OUTFILE="$2"
+fi
+
+IMGFILE="$1"
+OUTFILE=""
+
+if [ -z "$2" ] ; then
+    FULLNAME=`basename -- "$1"`
+    BASENAME="${FULLNAME%.*}"
+    OUTFILE="$BASENAME.avif"
+else
+    OUTFILE="$2"
+fi
+
+TMPFILE=$(mktemp)
+
+ffmpeg -i "$IMGFILE" -y -c:v libsvtav1 -an -strict experimental -preset 8 -svtav1-params "tune=0" -f avif "$TMPFILE"
+cp "$TMPFILE" "$OUTFILE"
+rm "$TMPFILE"
+
+

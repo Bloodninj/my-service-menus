@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Service
+ServiceTypes=KonqPopupMenu/Plugin
+MimeType=video/*;
+Actions=convertToAvif
+
+[Desktop Action convertToAvif]
+Name=Convert to AVIF
+Name[de]=In AVIF umwandeln
+Icon=image-gif
+Exec=vid2avif %u

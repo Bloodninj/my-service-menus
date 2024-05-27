@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Service
+ServiceTypes=KonqPopupMenu/Plugin
+MimeType=image/*;video/*;audio/*;text/*
+Actions=send2vps
+
+[Desktop Action send2vps]
+Name=Send to VPS
+Name[de]=Nach VPS versenden
+Icon=network-rj45-female
+Exec=send2vps.sh %u
