@@ -8,5 +8,5 @@ Actions=convertGifToAvif
 Name=Convert to AVIF
 Name[de]=In AVIF umwandeln
 Icon=image-gif
-Exec=vid2avif %u
+Exec=gif2avif %u
 
