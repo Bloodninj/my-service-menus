@@ -45,7 +45,7 @@ temp_file=$(mktemp)
 total_duration=$(ffprobe -v error -select_streams v:0 -show_entries stream=duration -of default=noprint_wrappers=1:nokey=1 "$input_file")
 
 # Start ffmpeg conversion with progress information
-ffmpeg -i "$input_file" -c:v libx264 -c:a aac -strict experimental -y -f mp4 -progress pipe:1 "$output_file" 2>&1 | \
+ffmpeg -i "$input_file" -c:v libsvtav1 -c:a libopus -y -f webm -svtav1-params "tune=0" -preset 8 -progress pipe:1 "$output_file" 2>&1 | \
     awk -F= '/progress/{print int($2)}' | \
     while read -r progress; do
         echo "Progress: $progress%"
