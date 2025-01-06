@@ -6,7 +6,7 @@ if [ -z "$FILE_TO_SEND" ]; then
 else
     scp -P YOUR_SSH_PORT "$FILE_TO_SEND" YOUR_HOST_HERE:/path/to/your/public/dir
     if [ $? -eq 0 ]; then
-        FILENAME="${FILE_TO_SEND##*/}"
+        FILENAME=`printf "${FILE_TO_SEND##*/}" | jq -sRr @uri`
         if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
             echo "https://plzlookat.mystupid.pictures/$FILENAME" | wl-copy
         else
